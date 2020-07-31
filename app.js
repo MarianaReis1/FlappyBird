@@ -92,16 +92,77 @@ const fBird = {
 }
 
 
-
-
-function loop(){
-    fBird.update();
-    background.drawing();
-    floor.drawing();
-    fBird.drawing();
+const getReady = {
+    sx: 134, 
+    sy: 0,
+    sWidth: 174, 
+    sHeight: 152, 
+    dx: (canvas.width / 2) - (174 /2), 
+    dy: 50, 
     
-
-    requestAnimationFrame(loop);
+    drawing() {
+        ctx.drawImage(
+            sprites,
+            getReady.sx, getReady.sy,
+            getReady.sWidth, getReady.sHeight,
+            getReady.dx, getReady.dy,
+            getReady.sWidth, getReady.sHeight,
+        );
+    }
 }
 
-loop();
+
+
+
+
+
+//
+let pageActive = {};
+function changePage(newPage){
+    pageActive = newPage;
+}
+
+
+const pages = {
+    START: {
+        drawing(){
+            background.drawing();
+            floor.drawing();
+            getReady.drawing();
+        },
+        click(){
+            changePage(pages.GAME);
+        },
+        update(){
+
+        }
+    },
+    GAME: {
+        drawing(){
+            background.drawing();
+            floor.drawing();
+            fBird.drawing();
+        }, 
+        update(){
+            fBird.update();
+        }
+    }
+}
+
+function loopFPS(){
+    
+    pageActive.drawing();
+    pageActive.update();
+
+    requestAnimationFrame(loopFPS);
+}
+
+window.addEventListener('click', function (){
+    if(pageActive.click){
+        pageActive.click();
+    };
+})
+
+
+changePage(pages.START);
+loopFPS();
